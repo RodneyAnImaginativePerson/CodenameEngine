@@ -440,11 +440,9 @@ final class CoolUtil
 	 * @param fadeIn
 	 */
 	@:noUsing public static function playMenuSong(fadeIn:Bool = false) {
-		if (FlxG.sound.music == null || !FlxG.sound.music.playing)
-		{
+		if (FlxG.sound.music == null || !FlxG.sound.music.playing) {
 			playMusic(Paths.music(Flags.DEFAULT_MENU_MUSIC), true, fadeIn ? 0 : 1, true, 102);
-			if (fadeIn)
-				FlxG.sound.music.fadeIn(4, 0, 0.7);
+			if (fadeIn) FlxG.sound.music.fadeIn(4, 0, 1);
 		}
 	}
 
@@ -880,7 +878,7 @@ final class CoolUtil
 	 */
 	public static inline function browsePath(path:String) {
 		var formattedPath:String = Path.normalize(path);
-		
+
 		#if windows
 		formattedPath = formattedPath.replace("/", "\\");
 		Sys.command("explorer", [formattedPath]);
@@ -1028,6 +1026,20 @@ final class CoolUtil
 	}
 
 	/**
+	 * Returns if the mouse is overlapping the sprite on a given camera, taking the camera's position, scroll and zoom into account.
+	 *
+	 * @param   sprite  Any `FlxObject`
+	 * @param   camera  The camera you want to check overlap on. Uses the sprite's camera by default.
+	 * @return  Bool
+	 */
+	public static function mouseOverlaps(sprite:FlxObject, ?camera:FlxCamera) {
+		var camToCheck:FlxCamera = camera ?? sprite.camera;
+		var posthing:FlxPoint = FlxG.mouse.getWorldPosition(camToCheck);
+
+		return posthing != null && FlxMath.inBounds(posthing.x, sprite.x, sprite.x + sprite.width) && FlxMath.inBounds(posthing.y, sprite.y, sprite.y + sprite.height);
+	}
+
+	/**
 	 * Sorts an array alphabetically.
 	 * @param array Array to sort
 	 * @param lowercase Whenever the array should be sorted in lowercase
@@ -1077,7 +1089,7 @@ final class CoolUtil
 			r.add(str);
 		return r.toString();
 	}
-	
+
 	public static inline function bound(Value:Float, Min:Float, Max:Float):Float {
 		#if cpp
 		var _hx_tmp1:Float = Value;
@@ -1224,8 +1236,8 @@ final class CoolUtil
 
 	/**
 	 * ! REQUIRES FULL PATH!!!
-	 * @param path 
-	 * @return Bool 
+	 * @param path
+	 * @return Bool
 	 */
 	public static function imageHasFrameData(path:String):String {
 		if (FileSystem.exists(Path.withExtension(path, "xml"))) return "xml";
@@ -1442,6 +1454,7 @@ final class CoolUtil
 
 		return toProperty.setValue(fromProperty.getValue());
 	}
+
 }
 
 class PropertyInfo {
